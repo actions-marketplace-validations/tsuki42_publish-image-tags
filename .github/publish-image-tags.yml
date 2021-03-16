@@ -1,0 +1,4 @@
+repo-name: test-repo-for-github-action
+output-file: README.md
+record-file: image-tags.yml
+branch-name: main

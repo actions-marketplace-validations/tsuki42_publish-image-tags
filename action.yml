@@ -1,0 +1,22 @@
+name: "Publish Image Tags"
+description: "Add docker image tags to the current PR and publish to a different github repo"
+author: "tsuki42"
+inputs:
+  repo-token:
+    description: "The GITHUB_TOKEN secret"
+    default: ${{ github.token }}
+    required: true
+  configuration-path:
+    description: "The path for the configuration"
+    default: ".github/publish-image-tags.yml"
+    required: false
+  image-tag:
+    description: "The image tag to be published"
+    required: true
+  target-token:
+    description: "The GITHUB_TOKEN for target repo"
+    default: ${{ github.token }}
+    required: true
+runs:
+  using: "node12"
+  main: "dist/index.js"

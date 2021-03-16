@@ -1,0 +1,19 @@
+name: Test Action
+on:
+  push:
+    branches:
+      - test
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v2
+      - name: 🌏 Set short commit hash in env
+        run: echo "COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-8)" >> $GITHUB_ENV
+      - name: Comment tag in PR
+        uses: ./
+        with:
+          image-tag: latest
+          repo-token: ${{ secrets.ACCESS_TOKEN }}
+          target-token: ${{ secrets.ACCESS_TOKEN }}
