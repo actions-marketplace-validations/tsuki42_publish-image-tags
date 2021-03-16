@@ -47,9 +47,11 @@ function run() {
             const configPath = core.getInput("configuration-path", { required: true });
             const imageTag = core.getInput("image-tag", { required: true });
             const destinationToken = core.getInput("target-token", { required: true });
+            console.log({ configPath });
             const octokit = github.getOctokit(token);
             // read config yaml file
             const configurationContent = yield utils.fetchContent(octokit, configPath);
+            console.log({ configurationContent });
             // loads (hopefully) a `{[label:string]:string | StringOrMatchConfig[]}` but is `any`:
             const configObject = yaml.load(configurationContent);
             console.log({ configObject });
