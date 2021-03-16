@@ -60,6 +60,7 @@ function run() {
             const targetFileName = configMap["output-file"];
             const recordFileName = configMap["record-file"];
             const targetBranchName = configMap["branch-name"];
+            const targetRepoOwner = configMap["target-repo-owner"];
             if (!targetRepoName) {
                 throw new Error("repo-name missing from config file");
             }
@@ -69,8 +70,9 @@ function run() {
             if (!recordFileName) {
                 throw new Error("record-file missing from config fie");
             }
+            const targetClient = github.getOctokit(destinationToken);
             // fetch record-file
-            const recordFile = yield utils.fetchContent(octokit, recordFileName, targetRepoName);
+            const recordFile = yield utils.fetchContent(targetClient, recordFileName, targetRepoName, targetRepoOwner);
             // check for image-tag entry in recordFile
             let imageRecords = yaml.load(recordFile);
             let updatedImageRecords = utils.updateImageTag(imageRecords, imageTag);
@@ -158,21 +160,14 @@ function createOrUpdatePrComment(client, prNumber, commentMessage) {
     });
 }
 exports.createOrUpdatePrComment = createOrUpdatePrComment;
-function fetchContent(client, path, repo = github.context.repo.repo) {
+function fetchContent(client, path, repo = github.context.repo.repo, owner = github.context.repo.owner) {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const user = yield client.users.getAuthenticated();
-            const response = yield client.repos.getContent({
-                owner: user.data.login,
-                repo,
-                path,
-            });
-            return Buffer.from(response.data.content, response.data.encoding).toString();
-        }
-        catch (error) {
-            console.log(error);
-            return "";
-        }
+        const response = yield client.repos.getContent({
+            owner,
+            repo,
+            path,
+        });
+        return Buffer.from(response.data.content, response.data.encoding).toString();
     });
 }
 exports.fetchContent = fetchContent;

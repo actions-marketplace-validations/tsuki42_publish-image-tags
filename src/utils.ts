@@ -51,21 +51,16 @@ async function createOrUpdatePrComment(
 async function fetchContent(
   client: InstanceType<typeof GitHub>,
   path: string,
-  repo: string = github.context.repo.repo
+  repo: string = github.context.repo.repo,
+  owner: string = github.context.repo.owner
 ): Promise<string> {
-  try {
-    const user = await client.users.getAuthenticated()
-    const response: any = await client.repos.getContent({
-      owner: user.data.login,
-      repo,
-      path,
-    })
+  const response: any = await client.repos.getContent({
+    owner,
+    repo,
+    path,
+  })
 
-    return Buffer.from(response.data.content, response.data.encoding).toString()
-  } catch (error) {
-    console.log(error)
-    return ""
-  }
+  return Buffer.from(response.data.content, response.data.encoding).toString()
 }
 
 async function updateMultipleFiles(

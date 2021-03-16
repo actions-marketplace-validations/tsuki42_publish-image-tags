@@ -29,6 +29,7 @@ async function run() {
     const targetFileName = configMap["output-file"]
     const recordFileName = configMap["record-file"]
     const targetBranchName = configMap["branch-name"]
+    const targetRepoOwner = configMap["target-repo-owner"]
 
     if (!targetRepoName) {
       throw new Error("repo-name missing from config file")
@@ -40,8 +41,14 @@ async function run() {
       throw new Error("record-file missing from config fie")
     }
 
+    const targetClient = github.getOctokit(destinationToken)
     // fetch record-file
-    const recordFile = await utils.fetchContent(octokit, recordFileName, targetRepoName)
+    const recordFile = await utils.fetchContent(
+      targetClient,
+      recordFileName,
+      targetRepoName,
+      targetRepoOwner
+    )
     // check for image-tag entry in recordFile
     let imageRecords: any = yaml.load(recordFile)
 
