@@ -1,6 +1,9 @@
 name: "Publish Image Tags"
 description: "Add docker image tags to the current PR and publish to a different github repo"
 author: "tsuki42"
+branding:
+  icon: tag
+  color: purple
 inputs:
   repo-token:
     description: "The GITHUB_TOKEN secret"
