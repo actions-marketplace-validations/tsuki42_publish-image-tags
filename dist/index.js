@@ -52,10 +52,12 @@ function run() {
             const configurationContent = yield utils.fetchContent(octokit, configPath);
             // loads (hopefully) a `{[label:string]:string | StringOrMatchConfig[]}` but is `any`:
             const configObject = yaml.load(configurationContent);
-            const targetRepoName = configObject["repo-name"];
-            const targetFileName = configObject["output-file"];
-            const recordFileName = configObject["record-file"];
-            const targetBranchName = configObject["branch-name"];
+            console.log({ configObject });
+            const configMap = utils.verifyConfigObject(configObject);
+            const targetRepoName = configMap["repo-name"];
+            const targetFileName = configMap["output-file"];
+            const recordFileName = configMap["record-file"];
+            const targetBranchName = configMap["branch-name"];
             if (!targetRepoName) {
                 throw new Error("repo-name missing from config file");
             }
@@ -121,7 +123,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createOrUpdateSummary = exports.updateImageTag = exports.updateMultipleFiles = exports.fetchContent = exports.createOrUpdatePrComment = exports.getPrNumber = void 0;
+exports.verifyConfigObject = exports.createOrUpdateSummary = exports.updateImageTag = exports.updateMultipleFiles = exports.fetchContent = exports.createOrUpdatePrComment = exports.getPrNumber = void 0;
 const github = __importStar(__nccwpck_require__(5438));
 let { Octokit } = __nccwpck_require__(5375);
 Octokit = Octokit.plugin(__nccwpck_require__(8349));
@@ -229,6 +231,19 @@ function createOrUpdateSummary(imageRecords) {
     return message;
 }
 exports.createOrUpdateSummary = createOrUpdateSummary;
+function verifyConfigObject(config) {
+    const configMap = new Map();
+    for (const key in config) {
+        if (typeof config[key] === "string") {
+            configMap.set(key, config[key]);
+        }
+        else {
+            throw Error(`found unexpected type of key ${key} (should be a string)`);
+        }
+    }
+    return configMap;
+}
+exports.verifyConfigObject = verifyConfigObject;
 
 
 /***/ }),

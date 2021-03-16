@@ -16,10 +16,15 @@ async function run() {
 
     // loads (hopefully) a `{[label:string]:string | StringOrMatchConfig[]}` but is `any`:
     const configObject: any = yaml.load(configurationContent)
-    const targetRepoName = configObject["repo-name"]
-    const targetFileName = configObject["output-file"]
-    const recordFileName = configObject["record-file"]
-    const targetBranchName = configObject["branch-name"]
+
+    console.log({ configObject })
+
+    const configMap = utils.verifyConfigObject(configObject)
+
+    const targetRepoName = configMap["repo-name"]
+    const targetFileName = configMap["output-file"]
+    const recordFileName = configMap["record-file"]
+    const targetBranchName = configMap["branch-name"]
 
     if (!targetRepoName) {
       throw new Error("repo-name missing from config file")
