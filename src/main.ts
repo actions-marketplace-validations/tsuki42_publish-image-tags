@@ -23,13 +23,10 @@ async function run() {
 
     console.log({ configObject })
 
-    const configMap = utils.verifyConfigObject(configObject)
-
-    const targetRepoName = configMap["repo-name"]
-    const targetFileName = configMap["output-file"]
-    const recordFileName = configMap["record-file"]
-    const targetBranchName = configMap["branch-name"]
-    const targetRepoOwner = configMap["target-repo-owner"]
+    const targetRepoName = configObject["repo-name"]
+    const targetFileName = configObject["output-file"]
+    const recordFileName = configObject["record-file"]
+    const targetBranchName = configObject["branch-name"]
 
     if (!targetRepoName) {
       throw new Error("repo-name missing from config file")
@@ -42,12 +39,13 @@ async function run() {
     }
 
     const targetClient = github.getOctokit(destinationToken)
+    const user = await targetClient.users.getAuthenticated()
     // fetch record-file
     const recordFile = await utils.fetchContent(
       targetClient,
       recordFileName,
       targetRepoName,
-      targetRepoOwner
+      user.data.login
     )
     // check for image-tag entry in recordFile
     let imageRecords: any = yaml.load(recordFile)

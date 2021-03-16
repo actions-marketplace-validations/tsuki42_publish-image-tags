@@ -125,18 +125,6 @@ function createOrUpdateSummary(imageRecords: Record<string, string>[]) {
   return message
 }
 
-function verifyConfigObject(config: any) {
-  const configMap: Map<string, string> = new Map()
-  for (const key in config) {
-    if (typeof config[key] === "string") {
-      configMap.set(key, config[key])
-    } else {
-      throw Error(`found unexpected type of key ${key} (should be a string)`)
-    }
-  }
-  return configMap
-}
-
 export {
   getPrNumber,
   createOrUpdatePrComment,
@@ -144,5 +132,4 @@ export {
   updateMultipleFiles,
   updateImageTag,
   createOrUpdateSummary,
-  verifyConfigObject,
 }
